@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cellscript — science, explained simply</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef5ee;--bg2:#d9eadf;--ink:#12302b;--mut:#4c6b64;--card:#ffffffd9;--line:#12302b22;--acc:#0b8a79;--on:#fff;--orb:.18;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#06161a;--bg2:#0b2a2c;--ink:#e6fbf4;--mut:#8fb5ad;--card:#0d2a2dd9;--line:#5eead433;--acc:#5eead4;--on:#04211f;--orb:.35}}
+:root[data-theme="dark"]{--bg:#06161a;--bg2:#0b2a2c;--ink:#e6fbf4;--mut:#8fb5ad;--card:#0d2a2dd9;--line:#5eead433;--acc:#5eead4;--on:#04211f;--orb:.35}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.6 Inter,system-ui,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 15% 0%,var(--bg2),transparent 60%),radial-gradient(ellipse at 100% 80%,var(--bg2),transparent 55%),var(--bg);min-height:100vh}
+h1,h2,h3,.serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:var(--orb)}
+#bg circle.c{fill:none;stroke:var(--acc);stroke-width:1.5}#bg .n{fill:var(--acc);opacity:.5}
+#bg g{animation:fl 22s ease-in-out infinite alternate}#bg g:nth-child(2n){animation-duration:30s}
+@keyframes fl{to{transform:translate(30px,-40px)}}
+main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:22px 16px 90px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-size:34px;margin:0;flex:1}.top h1 span{color:var(--acc);font-style:italic}
+.sub{color:var(--mut);margin:2px 0 14px}
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid #fbbf24;border-radius:14px;padding:9px 14px;font-size:13px;color:var(--mut);margin-bottom:16px}
+button,select,input,textarea{font:inherit;color:inherit}
+.btn{background:var(--acc);color:var(--on);border:0;border-radius:999px;padding:9px 18px;font-weight:600;cursor:pointer}
+.btn.g{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:5px 12px;font-size:13px}
+.btn.d{background:#e11d48;color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:14px;white-space:nowrap}
+.chip.on{background:var(--cc,var(--acc));color:#04211f;border-color:transparent;font-weight:600}
+.chip.t{font-size:12.5px;padding:3px 10px}
+.bar{display:flex;gap:8px;margin:4px 0 8px}
+.bar input{flex:1;min-width:0}
+input,select,textarea,.field{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 14px;width:100%;outline:none}
+input:focus,textarea:focus,select:focus,.field:focus{border-color:var(--acc)}
+.bar select{width:auto}
+.grid{display:grid;gap:14px;margin-top:10px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:26px 26px 26px 8px;padding:16px 18px;backdrop-filter:blur(8px);cursor:pointer;transition:transform .25s,box-shadow .25s;overflow:hidden}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 30px -14px var(--cc)}
+.card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--cc)}
+.card.pin{border-color:var(--cc)}.card.drag{opacity:.4}
+.card h3{margin:2px 0 4px;font-size:20px}
+.meta{font-size:12.5px;color:var(--mut);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ex{color:var(--mut);margin:6px 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.acts{display:flex;gap:6px;margin-top:8px}
+.ib{background:transparent;border:1px solid var(--line);border-radius:10px;width:34px;height:30px;cursor:pointer}
+.ib.on{background:var(--cc);color:#04211f}
+.empty{text-align:center;color:var(--mut);padding:50px 10px}
+.empty .big{font-size:56px}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:5;box-shadow:0 10px 30px -8px var(--acc);padding:13px 22px}
+.ov{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.ov[hidden]{display:none}
+.pn{max-width:760px;margin:0 auto}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:12.5px;color:var(--mut);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.06em}
+.tb{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+#body{min-height:300px;border-radius:18px;padding:16px;line-height:1.7}
+.prose h2{font-size:26px;margin:1.4em 0 .4em}.prose h3{font-size:20px}
+.prose img{max-width:100%;border-radius:16px;margin:10px 0;display:block}
+.prose blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:2px 14px;color:var(--mut)}
+.cred{margin-top:28px;padding:16px 18px;border-radius:18px;border:1px dashed var(--acc);background:var(--card)}
+.cred h3{margin:0 0 6px;font-size:17px;color:var(--acc)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;z-index:60;font-size:14px}
+/* presentation */
+#pres{position:fixed;inset:0;z-index:40;background:radial-gradient(ellipse at 30% 20%,#0f3d3a,#041114 70%);color:#e6fbf4;overflow:hidden}
+#pres[hidden]{display:none}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:calc(60px + env(safe-area-inset-top,0px)) 7vw calc(90px + env(safe-area-inset-bottom,0px));opacity:0;transform:var(--a);filter:var(--f,none);transition:opacity 1s cubic-bezier(.22,.61,.36,1),transform 1s cubic-bezier(.22,.61,.36,1),filter 1s;pointer-events:none;overflow:auto}
+.slide.before{transform:var(--b)}
+.slide.active{opacity:1;transform:none;filter:none;pointer-events:auto}
+.slide .c>*{opacity:0}.slide.active .c>*{animation:up .9s cubic-bezier(.22,.61,.36,1) both;animation-delay:calc(var(--i)*.14s + .25s)}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(30px,6vw,64px);margin:0 0 10px;line-height:1.1}
+.slide h2{font-size:clamp(26px,4.4vw,46px);margin:0 0 14px;color:#5eead4}
+.slide p,.slide li{font-size:clamp(16px,2.2vw,24px);line-height:1.55}
+.slide img{max-width:100%;max-height:44vh;border-radius:18px;object-fit:contain}
+.slide blockquote{border-left:3px solid #5eead4;margin:8px 0;padding-left:16px;color:#b6e5da}
+.pc{position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;justify-content:center;align-items:center;z-index:3}
+.pc .btn{background:#5eead4;color:#04211f}.pc .btn.g{background:#0000;color:#e6fbf4;border-color:#5eead455}
+.pc select{width:auto;background:#0b2a2c;color:#e6fbf4;border-color:#5eead455}
+#prog{position:absolute;top:env(safe-area-inset-top,0px);left:0;height:3px;background:#5eead4;transition:width .8s;z-index:3}
+#px{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:3}
+</style>
+</head>
+<body>
+<svg id="bg" width="100%" height="100%" viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<g><circle class="c" cx="120" cy="180" r="70"/><circle class="n" cx="135" cy="170" r="20"/><circle class="c" cx="60" cy="260" r="26"/></g>
+<g><circle class="c" cx="660" cy="420" r="95"/><circle class="n" cx="640" cy="440" r="26"/><circle class="c" cx="740" cy="330" r="34"/></g>
+<g><path class="c" fill="none" stroke="var(--acc)" stroke-width="1.5" d="M120 900 q60-80 120-20 t120-30 t100 60 M240 880 q10-90 70-120 M360 850 q60-30 90-110"/><circle class="n" cx="120" cy="900" r="18"/><circle class="n" cx="450" cy="740" r="8"/></g>
+<g><circle class="c" cx="560" cy="1020" r="60"/><circle class="n" cx="575" cy="1010" r="16"/><circle class="c" cx="300" cy="560" r="40"/></g>
+</svg>
+
+<main id="home">
+ <div class="top"><h1>Cell<span>script</span></h1><button class="btn g sm" id="theme" title="Toggle light/dark">◐</button></div>
+ <p class="sub">Medical research, explained in plain words.</p>
+ <div class="note">🔬 <b>Educational only.</b> I'm not a doctor. Nothing here is medical advice, diagnosis, or treatment — please talk to a qualified health professional about your own health.</div>
+ <div class="chips" id="cats"></div>
+ <div class="bar"><input id="q" type="search" placeholder="Search papers by name…"><select id="sort"><option value="manual">My order</option><option value="new">Newest</option><option value="old">Oldest</option><option value="az">A–Z</option></select></div>
+ <div class="chips" id="tags"></div>
+ <div class="grid" id="list"></div>
+</main>
+<button class="btn fab" id="add">＋ Add paper</button>
+
+<div class="ov" id="rd" hidden><div class="pn" id="rdc"></div></div>
+
+<div class="ov" id="ed" hidden><div class="pn">
+ <h2 id="edh" style="margin:0">New paper</h2>
+ <label>Section</label><div class="chips" id="ecats" style="flex-wrap:wrap"></div>
+ <label>Title</label><input id="et" placeholder="e.g. Introduction to the immune system">
+ <div class="row"><div><label>Date</label><input id="ed8" type="date"></div><div><label>Author</label><input id="ea" placeholder="Your name"></div></div>
+ <label>Tags (comma separated)</label><input id="etg" placeholder="intro, t-cells, inflammation">
+ <label>Write or upload</label>
+ <div class="tb">
+  <button class="btn g sm" data-c="bold"><b>B</b></button><button class="btn g sm" data-c="italic"><i>I</i></button>
+  <button class="btn g sm" data-b="h2">Heading</button><button class="btn g sm" data-b="h3">Sub</button>
+  <button class="btn g sm" data-c="insertUnorderedList">• List</button><button class="btn g sm" data-b="blockquote">❝</button>
+  <button class="btn g sm" id="eimg">🖼 Image</button><button class="btn g sm" id="efile">📄 Upload file</button>
+ </div>
+ <div id="body" class="field prose" contenteditable="true" data-ph="Start writing… Each Heading becomes a slide in your presentation."></div>
+ <input type="file" id="fi" accept="image/*" hidden><input type="file" id="ff" accept=".txt,.md,.html,.htm" hidden>
+ <label>Credits &amp; sources</label><textarea id="ec" rows="3" placeholder="Original paper, authors, image credits, links…"></textarea>
+ <label>Presentation transition</label><select id="etr"></select>
+ <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><button class="btn" id="esv">Save</button><button class="btn g" id="ecx">Cancel</button><button class="btn d" id="edel" hidden>Delete</button></div>
+</div></div>
+
+<div id="pres" hidden><div id="prog"></div><button class="btn g sm" id="px">✕ Exit</button><div id="stage"></div>
+ <div class="pc"><button class="btn g" id="pp">←</button><select id="ptr" aria-label="Transition"></select><button class="btn" id="pn">→</button></div></div>
+
+<script>
+const CATS=[{id:'autoimmune',n:'Autoimmune',e:'🧬',c:'#f472b6'},{id:'neurology',n:'Neurology',e:'🧠',c:'#a78bfa'},{id:'immunology',n:'Immunology',e:'🛡️',c:'#5eead4'},{id:'psychology',n:'Psychology',e:'🌀',c:'#fbbf24'},{id:'general',n:'General Medicine',e:'🩺',c:'#60a5fa'}];
+const TR={fade:['Gentle fade','none','none','none'],slide:['Glide','translateX(90px)','translateX(-90px)','none'],zoom:['Zoom through','scale(1.14)','scale(.88)','none'],blur:['Dissolve (blur)','scale(1.03)','scale(.97)','blur(22px)'],rise:['Rise','translateY(70px)','translateY(-70px)','none'],drift:['Drift','translate(60px,35px) rotate(1.5deg)','translate(-60px,-35px) rotate(-1.5deg)','none']};
+const DIS='Educational explanation only — not medical advice. The author is not a doctor. Please consult a qualified healthcare professional about your health.';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cat=id=>CATS.find(c=>c.id===id)||CATS[4];
+let papers=[],st={cat:'all',tag:null,q:'',sort:'manual'},db=null,cur=null,editId=null,eCat='immunology',slides=[],si=0;
+
+function clean(h){const d=new DOMParser().parseFromString(h||'','text/html');
+ d.querySelectorAll('script,style,iframe,object,embed,link,meta,form').forEach(n=>n.remove());
+ d.body.querySelectorAll('*').forEach(n=>{[...n.attributes].forEach(a=>{const v=a.value.trim().toLowerCase();if(/^on/i.test(a.name)||a.name==='style'||((a.name==='href'||a.name==='src')&&v.startsWith('javascript:')))n.removeAttribute(a.name)})});
+ return d.body.innerHTML}
+const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)};
+
+/* ---------- storage: shared db when available, else this browser ---------- */
+async function init(){
+ try{if(window.claude){db=await Promise.race([claude.use('db'),new Promise(r=>setTimeout(()=>r(null),4000))])}}catch(e){db=null}
+ if(db){db.collection('papers').onSnapshot(s=>{papers=s.docs.map(d=>({...d.data(),id:d.id}));render()},()=>{db=null;loadLocal()})}
+ else loadLocal();
+}
+function loadLocal(){try{papers=JSON.parse(localStorage.getItem('cs_papers')||'[]')}catch(e){papers=[]}render()}
+async function put(p){const i=papers.findIndex(x=>x.id===p.id);i<0?papers.push(p):papers[i]=p;
+ try{if(db)await db.collection('papers').doc(p.id).set(p);else localStorage.setItem('cs_papers',JSON.stringify(papers))}catch(e){toast('Could not save — the paper may be too large')}}
+async function del(id){papers=papers.filter(p=>p.id!==id);try{if(db)await db.collection('papers').doc(id).delete();else localStorage.setItem('cs_papers',JSON.stringify(papers))}catch(e){}}
+
+/* ---------- list ---------- */
+function sorted(list){const a=[...list];
+ const f={manual:(x,y)=>(x.order||0)-(y.order||0),new:(x,y)=>(y.date||'').localeCompare(x.date||''),old:(x,y)=>(x.date||'').localeCompare(y.date||''),az:(x,y)=>x.title.localeCompare(y.title)}[st.sort];
+ return a.sort((x,y)=>(!!y.pinned-!!x.pinned)||f(x,y))}
+function render(){
+ $('#cats').innerHTML=[{id:'all',n:'All',e:'✨',c:'var(--acc)'},...CATS].map(c=>`<button class="chip ${st.cat===c.id?'on':''}" style="--cc:${c.c}" data-cat="${c.id}">${c.e} ${c.n} <small>${c.id==='all'?papers.length:papers.filter(p=>p.cat===c.id).length}</small></button>`).join('');
+ const inCat=papers.filter(p=>st.cat==='all'||p.cat===st.cat);
+ const tags=[...new Set(inCat.flatMap(p=>p.tags||[]))].sort();
+ if(st.tag&&!tags.includes(st.tag))st.tag=null;
+ $('#tags').innerHTML=tags.map(t=>`<button class="chip t ${st.tag===t?'on':''}" data-tag="${esc(t)}">#${esc(t)}</button>`).join('');
+ const q=st.q.toLowerCase();
+ const list=sorted(inCat.filter(p=>(!st.tag||(p.tags||[]).includes(st.tag))&&(!q||p.title.toLowerCase().includes(q))));
+ $('#list').innerHTML=list.length?list.map(p=>{const c=cat(p.cat);const tx=(new DOMParser().parseFromString(p.body||'','text/html').body.textContent||'').slice(0,160);
+  return `<article class="card ${p.pinned?'pin':''}" style="--cc:${c.c}" data-id="${p.id}" draggable="${st.sort==='manual'}">
+  <div class="meta"><span>${c.e} ${c.n}</span><span>${p.date?new Date(p.date+'T00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}):''}</span>${p.pinned?'<span>📌 Pinned</span>':''}</div>
+  <h3>${esc(p.title)}</h3><div class="ex">${esc(tx)}</div>
+  <div class="meta">${(p.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
+  <div class="acts"><button class="ib ${p.pinned?'on':''}" data-a="pin" title="Pin to top">📌</button>${st.sort==='manual'?'<button class="ib" data-a="up" title="Move up">↑</button><button class="ib" data-a="dn" title="Move down">↓</button>':''}<button class="ib" data-a="edit" title="Edit">✎</button></div></article>`}).join('')
+  :`<div class="empty"><div class="big">🧫</div><p>${papers.length?'No papers match this filter.':'Your petri dish is empty. Add your first paper to get started.'}</p></div>`;
+}
+$('#cats').onclick=e=>{const b=e.target.closest('[data-cat]');if(b){st.cat=b.dataset.cat;st.tag=null;render()}};
+$('#tags').onclick=e=>{const b=e.target.closest('[data-tag]');if(b){st.tag=st.tag===b.dataset.tag?null:b.dataset.tag;render()}};
+$('#q').oninput=e=>{st.q=e.target.value;render()};$('#sort').onchange=e=>{st.sort=e.target.value;render()};
+$('#list').onclick=async e=>{const card=e.target.closest('.card');if(!card)return;const p=papers.find(x=>x.id===card.dataset.id);const a=e.target.closest('[data-a]')?.dataset.a;
+ if(!a)return openRead(p);
+ if(a==='pin'){p.pinned=!p.pinned;await put(p);render()}
+ else if(a==='edit')openEd(p);
+ else{const l=sorted(papers).filter(x=>!!x.pinned===!!p.pinned);const i=l.findIndex(x=>x.id===p.id),j=a==='up'?i-1:i+1;if(j<0||j>=l.length)return;
+  const o=l[i].order;l[i].order=l[j].order;l[j].order=o;if(l[i].order===l[j].order)l[j].order+=a==='up'?1:-1;await put(l[i]);await put(l[j]);render()}};
+let dragId=null;
+$('#list').ondragstart=e=>{const c=e.target.closest('.card');if(c){dragId=c.dataset.id;c.classList.add('drag')}};
+$('#list').ondragend=e=>{e.target.closest('.card')?.classList.remove('drag')};
+$('#list').ondragover=e=>e.preventDefault();
+$('#list').ondrop=async e=>{e.preventDefault();const t=e.target.closest('.card');if(!t||!dragId||t.dataset.id===dragId)return;
+ const l=sorted(papers),f=l.find(x=>x.id===dragId),to=l.find(x=>x.id===t.dataset.id);if(!!f.pinned!==!!to.pinned){toast('Pinned papers stay above unpinned ones');return}
+ l.splice(l.indexOf(f),1);l.splice(l.indexOf(to)+(l.indexOf(to)>=l.length?0:0),0,f);
+ for(let i=0;i<l.length;i++){if(l[i].order!==i){l[i].order=i;await put(l[i])}}render()};
+
+/* ---------- reader ---------- */
+function openRead(p){cur=p;const c=cat(p.cat);
+ $('#rdc').innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button class="btn g sm" id="rb">← Back</button><button class="btn sm" id="rp">▶ Present</button><button class="btn g sm" id="re">✎ Edit</button></div>
+ <div class="meta" style="color:${c.c}">${c.e} ${c.n}</div><h1 style="font-size:36px;margin:6px 0">${esc(p.title)}</h1>
+ <div class="meta">${p.author?`<span>By ${esc(p.author)}</span>`:''}<span>${p.date||''}</span>${(p.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
+ <div class="note" style="margin-top:14px">🔬 ${DIS}</div>
+ <div class="prose">${clean(p.body)}</div>
+ ${p.credits?`<div class="cred"><h3>Credits &amp; sources</h3><div style="white-space:pre-wrap">${esc(p.credits)}</div></div>`:''}`;
+ $('#rd').hidden=false;$('#rd').scrollTop=0;
+ $('#rb').onclick=()=>$('#rd').hidden=true;$('#re').onclick=()=>openEd(p);$('#rp').onclick=()=>present(p)}
+
+/* ---------- editor ---------- */
+$('#etr').innerHTML=$('#ptr').innerHTML=Object.entries(TR).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+function ecats(){$('#ecats').innerHTML=CATS.map(c=>`<button type="button" class="chip ${eCat===c.id?'on':''}" style="--cc:${c.c}" data-c="${c.id}">${c.e} ${c.n}</button>`).join('')}
+$('#ecats').onclick=e=>{const b=e.target.closest('[data-c]');if(b){eCat=b.dataset.c;ecats()}};
+function openEd(p){editId=p?.id||null;eCat=p?.cat||(st.cat!=='all'?st.cat:'immunology');ecats();
+ $('#edh').textContent=p?'Edit paper':'New paper';$('#et').value=p?.title||'';$('#ed8').value=p?.date||new Date().toISOString().slice(0,10);
+ $('#ea').value=p?.author||'';$('#etg').value=(p?.tags||[]).join(', ');$('#body').innerHTML=clean(p?.body||'');$('#ec').value=p?.credits||'';$('#etr').value=p?.tr||'fade';
+ $('#edel').hidden=!p;$('#ed').hidden=false;$('#ed').scrollTop=0}
+$('#add').onclick=()=>openEd(null);$('#ecx').onclick=()=>$('#ed').hidden=true;
+$('#esv').onclick=async()=>{const t=$('#et').value.trim();if(!t){toast('Add a title first');return}
+ const old=papers.find(x=>x.id===editId);
+ const p={id:editId||'p'+Date.now().toString(36),title:t,cat:eCat,date:$('#ed8').value,author:$('#ea').value.trim(),tags:$('#etg').value.split(',').map(x=>x.trim().toLowerCase().replace(/^#/,'')).filter(Boolean),body:clean($('#body').innerHTML),credits:$('#ec').value.trim(),tr:$('#etr').value,pinned:old?.pinned||false,order:old?.order??(Math.max(0,...papers.map(x=>x.order||0))+1)};
+ await put(p);$('#ed').hidden=true;if(!$('#rd').hidden)openRead(p);render();toast('Saved 🌱')};
+$('#edel').onclick=async()=>{if(confirm('Delete this paper permanently?')){await del(editId);$('#ed').hidden=true;$('#rd').hidden=true;render()}};
+document.querySelector('.tb').addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
+document.querySelector('.tb').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('#body').focus();
+ if(b.dataset.c)document.execCommand(b.dataset.c);if(b.dataset.b)document.execCommand('formatBlock',false,b.dataset.b)});
+$('#eimg').onclick=()=>$('#fi').click();$('#efile').onclick=()=>$('#ff').click();
+$('#fi').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;toast('Adding image…');
+ try{const bm=await createImageBitmap(f),s=Math.min(1,1200/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=bm.width*s;c.height=bm.height*s;
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bm,0,0,c.width,c.height);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.78));let url=null;
+  try{const a=window.claude&&await claude.use('assets');if(a)url=(await a.upload(blob)).url}catch(_){}
+  if(!url)url=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(blob)});
+  $('#body').focus();document.execCommand('insertImage',false,url)}catch(_){toast('Could not read that image')}};
+$('#ff').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const t=await f.text();
+ const html=/\.html?$/i.test(f.name)?clean(t):t.split(/\n{2,}/).map(b=>{b=b.trim();const m=b.match(/^(#{1,3})\s+(.*)/);return m?`<h${m[1].length+1}>${esc(m[2])}</h${m[1].length+1}>`:b?'<p>'+esc(b).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'</p>':''}).join('');
+ $('#body').innerHTML+=html;if(!$('#et').value)$('#et').value=f.name.replace(/\.\w+$/,'');toast('File added')};
+
+/* ---------- presentation ---------- */
+function present(p){const d=document.createElement('div');d.innerHTML=clean(p.body);const c=cat(p.cat);
+ slides=[`<div class="c"><div style="color:#5eead4">${c.e} ${c.n}</div><h1 class="serif">${esc(p.title)}</h1><p>${esc(p.author?'By '+p.author:'')} ${p.date||''}</p></div>`];
+ let s=null;const push=()=>{if(s&&s.n.length)slides.push(`<div class="c">${s.h?`<h2 class="serif">${esc(s.h)}</h2>`:''}${s.n.join('')}</div>`)};
+ [...d.children].forEach(n=>{if(n.tagName==='H2'){push();s={h:n.textContent,n:[]}}else{s=s||{h:'',n:[]};s.n.push(n.outerHTML)}});push();
+ slides.push(`<div class="c"><h2 class="serif">Credits &amp; sources</h2><p style="white-space:pre-wrap">${esc(p.credits||'—')}</p><blockquote>${DIS}</blockquote></div>`);
+ $('#stage').innerHTML=slides.map(h=>`<section class="slide">${h}</section>`).join('');
+ $('#stage').querySelectorAll('.c').forEach(c=>[...c.children].forEach((k,i)=>k.style.setProperty('--i',i)));
+ $('#ptr').value=p.tr||'fade';setTr();si=0;$('#pres').hidden=false;go(0)}
+function setTr(){const t=TR[$('#ptr').value],s=$('#stage').style;s.setProperty('--a',t[1]);s.setProperty('--b',t[2]);s.setProperty('--f',t[3])}
+$('#stage').style.cssText='position:absolute;inset:0';
+$('#ptr').onchange=async()=>{setTr();if(cur){cur.tr=$('#ptr').value;await put(cur)}};
+function go(i){si=Math.max(0,Math.min(slides.length-1,i));$('#stage').querySelectorAll('.slide').forEach((el,k)=>{el.classList.toggle('active',k===si);el.classList.toggle('before',k<si);if(k===si)el.scrollTop=0});
+ $('#prog').style.width=((si+1)/slides.length*100)+'%'}
+$('#pn').onclick=()=>go(si+1);$('#pp').onclick=()=>go(si-1);$('#px').onclick=()=>$('#pres').hidden=true;
+document.addEventListener('keydown',e=>{if($('#pres').hidden)return;if(e.key==='ArrowRight'||e.key===' ')go(si+1);if(e.key==='ArrowLeft')go(si-1);if(e.key==='Escape')$('#pres').hidden=true});
+let tx=0;$('#pres').addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+$('#pres').addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)go(si+(d<0?1:-1))});
+
+$('#theme').onclick=()=>{const r=document.documentElement,dk=getComputedStyle(r).getPropertyValue('--bg').trim()==='#06161a';r.dataset.theme=dk?'light':'dark'};
+init();
+</script>
+</body>
+</html>
